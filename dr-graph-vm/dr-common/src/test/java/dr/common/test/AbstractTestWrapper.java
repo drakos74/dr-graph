@@ -20,7 +20,7 @@ public abstract class AbstractTestWrapper extends AbstractLoggingStrategy {
 			logger.error(e.getMessage(),e);
 			Assert.fail(e.getMessage()+". "+
 			"NOTE: This test might have failed because of missing internet connection."+
-					" Some tests are currently dependent on this, due to laziness to create stubs :P."+
+			" Some tests are currently dependent on this, due to laziness to create stubs :P."+
 			" If it's not too much trouble, @Ignore this test and continue ... ");
 		}
 	}

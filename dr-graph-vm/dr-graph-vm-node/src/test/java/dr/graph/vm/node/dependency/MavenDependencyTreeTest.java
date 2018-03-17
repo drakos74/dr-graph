@@ -85,5 +85,12 @@ public class MavenDependencyTreeTest extends AbstractTestWrapper {
 		});
 
 	}
+	
+	@Test
+	public void testResolveFullDependencyTree() {
+
+		// TODO : ...
+
+	}
 
 }
