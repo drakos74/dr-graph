@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>dr.graph.vm</groupId>
+		<artifactId>dr-graph-vm</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>dr-graph-vm-source</artifactId>
+
+	<dependencies>
+		
+		<dependency>
+			<groupId>dr.graph.vm</groupId>
+			<artifactId>dr-common</artifactId>
+			<version>${current.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>dr.graph.vm</groupId>
+			<artifactId>dr-common</artifactId>
+			<type>test-jar</type>
+			<version>${current.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>9</source>
+					<target>9</target>
+					<compilerArgs>
+						<arg>--add-modules</arg>
+						<arg>jdk.incubator.httpclient</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
