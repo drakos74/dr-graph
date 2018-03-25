@@ -1,14 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>dr.graph.vm</groupId>
-		<artifactId>dr-graph-vm</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</parent>
-	<artifactId>dr-graph-vm-node</artifactId>
-
-	<dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>dr.graph.vm</groupId>
+    <artifactId>dr-graph-vm</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>dr-graph-vm-maven</artifactId>
+  
+  <dependencies>
 		<dependency>
 			<groupId>dr.graph.vm</groupId>
 			<artifactId>dr-graph-vm-source</artifactId>
@@ -20,13 +19,7 @@
 			<artifactId>dr-graph-vm-parser</artifactId>
 			<version>${current.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>dr.graph.vm</groupId>
-			<artifactId>dr-graph-vm-maven</artifactId>
-			<version>${current.version}</version>
-		</dependency>
-
+		
 		<dependency>
 			<groupId>dr.graph.vm</groupId>
 			<artifactId>dr-common</artifactId>
@@ -42,5 +35,5 @@
 		</dependency>
 
 	</dependencies>
-
+	
 </project>

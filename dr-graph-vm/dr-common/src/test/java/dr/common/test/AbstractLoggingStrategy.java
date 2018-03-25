@@ -9,7 +9,7 @@ public abstract class AbstractLoggingStrategy{
 	
 	static
 	{
-		System.setProperty("debug", "");
+		System.setProperty("debug", "true");
 	}
 	
 }

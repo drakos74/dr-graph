@@ -14,8 +14,9 @@
 	<modules>
 		<module>dr-common</module>
 		<module>dr-graph-vm-source</module>
-		<module>dr-graph-vm-node</module>
+		<!-- <module>dr-graph-vm-node</module> -->
 		<module>dr-graph-vm-parser</module>
+		<module>dr-graph-vm-maven</module>
 	</modules>
 
 	<dependencies>

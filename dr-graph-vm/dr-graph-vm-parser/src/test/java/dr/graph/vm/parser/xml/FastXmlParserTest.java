@@ -12,13 +12,16 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dr.common.test.AbstractTestWrapper;
 import dr.graph.vm.parser.GenericParseException;
 import dr.graph.vm.parser.string.FastStringParser;
 
-public class FastXmlParserTest {
+public class FastXmlParserTest extends AbstractTestWrapper{
 
 	private static final Logger logger = LoggerFactory.getLogger(FastXmlParserTest.class);
 
+	private final static String FAILURE_NOTE = "NOTE : Test might fail due to changed dependencies in the same module.";
+	
 	@Test
 	public void testParsingMavenDependencies() throws IOException, GenericParseException {
 		
@@ -34,9 +37,9 @@ public class FastXmlParserTest {
 		
 		dependencies.stream().forEach(System.out::println);
 		
-		Assert.assertEquals(1, dependencies.size());
+		Assert.assertEquals(FAILURE_NOTE,2, dependencies.size());
 		
-		Assert.assertTrue(dependencies.iterator().next().contains("dr-common"));
+		Assert.assertTrue(FAILURE_NOTE,dependencies.iterator().next().contains("dr-common"));
 		
 	}
 	

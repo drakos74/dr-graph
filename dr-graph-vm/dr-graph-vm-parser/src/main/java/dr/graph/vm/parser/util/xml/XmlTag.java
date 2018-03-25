@@ -8,9 +8,10 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dr.graph.vm.parser.AbstractParser;
+import dr.graph.vm.parser.string.DynamicPattern;
 import dr.graph.vm.parser.string.FastStringParser;
 import dr.graph.vm.parser.string.SingleMatchParser;
-import dr.graph.vm.parser.string.StringParser;
 
 public enum XmlTag implements XmlTagIfc {
 	parent , dependencyManagement, dependencies , dependency, groupId, artifactId, type, version, scope;
@@ -25,34 +26,32 @@ public enum XmlTag implements XmlTagIfc {
 
 	@Override
 	public String getOne(String xml) {
-		Set<String> matches = Collections.emptySet();
-		try {
-			matches = getParser().parse(xml);
-		} catch (Exception e) {
-			logger.warn("Could not parse " + this.name() + " from " + xml);
-		}
-		return matches.size() > 0 ? matches.iterator().next() : "";
+		return helper.getOne(xml);
 	}
 	
 	@Override
 	public Set<String> getMany(String xml) {
-		Set<String> matches = Collections.emptySet();
-		try {
-			matches = getMultiParser().parse(xml);
-		} catch (Exception e) {
-			logger.warn("Could not parse " + this.name() + " from " + xml);
-		}
-		return matches.size() > 0 ? matches : Collections.emptySet();
+		return helper.getMany(xml);
 	}
 	
 	@Override
-	public StringParser getParser() {
+	public String getOnly(String xml) {
+		return helper.getOnly(xml);
+	}
+	
+	@Override
+	public AbstractParser getParser() {
 		return helper.singleMatchParser;
 	}
 	
 	@Override
-	public StringParser getMultiParser() {
+	public AbstractParser getMultiParser() {
 		return helper.multiMatchParser;
+	}
+	
+	@Override
+	public AbstractParser getUniqueParser() {
+		return helper.getUniqueParser();
 	}
 	
 	@Override
@@ -81,6 +80,7 @@ public enum XmlTag implements XmlTagIfc {
 		public final String close;
 		
 		private final SingleMatchParser singleMatchParser;
+		private final FastStringParser uniqueMatchParser;
 		private final FastStringParser multiMatchParser;
 
 		private Helper(String name) {
@@ -89,6 +89,18 @@ public enum XmlTag implements XmlTagIfc {
 			this.close = "</" + name + ">";
 			singleMatchParser = new SingleMatchParser(this.open, this.close);
 			multiMatchParser = new FastStringParser(this.open, this.close);
+			uniqueMatchParser = new FastStringParser(this.open, this.close,new DynamicPattern());
+		}
+		
+		@Override
+		public String getOnly(String xml) {
+			Set<String> matches = Collections.emptySet();
+			try {
+				matches = getParser().parse(xml);
+			} catch (Exception e) {
+				logger.warn("Could not parse " + this.name + " from " + xml);
+			}
+			return matches.size() > 0 ? matches.iterator().next() : "";
 		}
 		
 		@Override
@@ -114,12 +126,17 @@ public enum XmlTag implements XmlTagIfc {
 		}
 
 		@Override
-		public StringParser getParser() {
+		public AbstractParser getParser() {
 			return singleMatchParser;
 		}
 		
 		@Override
-		public StringParser getMultiParser() {
+		public AbstractParser getUniqueParser() {
+			return uniqueMatchParser;
+		}
+		
+		@Override
+		public AbstractParser getMultiParser() {
 			return multiMatchParser;
 		}
 

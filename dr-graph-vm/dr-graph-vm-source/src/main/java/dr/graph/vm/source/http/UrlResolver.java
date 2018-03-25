@@ -24,14 +24,14 @@ public class UrlResolver implements Resolver<String, String> , LazyLogger {
 		this.config = config;
 	}
 
-	public String resolve(String id) throws GenericResolverException {
+	public String resolve(String url) throws GenericResolverException {
 
-		log("resolving "+id);
+		log("resolving "+url);
 		
 		try {
-			return send(new URL(id));
+			return send(new URL(url));
 		} catch (MalformedURLException e) {
-			throw new GenericResolverException("Could not form valid url from provided id=" + id);
+			throw new GenericResolverException("Could not form valid url from provided id=" + url);
 		}
 
 	}

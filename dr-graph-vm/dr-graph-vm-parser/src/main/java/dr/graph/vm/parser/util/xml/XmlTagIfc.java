@@ -2,7 +2,7 @@ package dr.graph.vm.parser.util.xml;
 
 import java.util.Set;
 
-import dr.graph.vm.parser.string.StringParser;
+import dr.graph.vm.parser.AbstractParser;
 
 public interface XmlTagIfc {
 
@@ -14,8 +14,12 @@ public interface XmlTagIfc {
 	
 	public Set<String> getMany(String xml);
 	
-	public StringParser getParser();
+	public AbstractParser getParser();
 	
-	public StringParser getMultiParser();
+	public AbstractParser getMultiParser();
+
+	AbstractParser getUniqueParser();
+
+	String getOnly(String xml);
 	
 }

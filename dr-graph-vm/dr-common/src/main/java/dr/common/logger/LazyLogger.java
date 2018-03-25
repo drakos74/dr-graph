@@ -17,12 +17,18 @@ public interface LazyLogger {
 		add("dr.graph.vm.parser.string.SingleMatchParser");
 		add("dr.graph.vm.parser.string.FastStringParser");
 		add("dr.graph.vm.node.dependency.MavenDependencyIndex");
+		add("dr.graph.vm.maven.resolver.MavenArtifactResolver");
+		add("dr.graph.vm.source.http.UrlResolver");
 	}};
 
 	// TODO : attach parser ... 
 	final boolean debug = Boolean.parseBoolean(System.getProperty("debug"));
 	
 	final static Map<Class<?>,Logger> loggers = new ConcurrentHashMap<>();
+	
+	default void error(String msg , Throwable e) {
+		getLogger().error(getMsg(msg),e);
+	}
 	
 	default void log(String msg) {
 		if(debug)getLogger().info(getMsg(msg));

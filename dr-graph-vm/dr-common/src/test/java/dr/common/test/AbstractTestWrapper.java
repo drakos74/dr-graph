@@ -1,9 +1,10 @@
 package dr.common.test;
 
 import org.junit.Assert;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractTestWrapper extends AbstractLoggingStrategy {
-
+	
 	protected void RunTest(TesterModule module) {
 		try {
 			module.execute();

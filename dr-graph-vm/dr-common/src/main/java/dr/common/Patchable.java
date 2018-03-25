@@ -1,8 +1,8 @@
 package dr.common;
 
 @FunctionalInterface
-public interface Patchable {
+public interface Patchable<P> {
 
-	<P extends Patchable> boolean  patch(P patch);
+	P patch(P patch);
 	
 }
