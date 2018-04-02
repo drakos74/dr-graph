@@ -6,6 +6,8 @@ public interface Node<T> {
 
 	T parent();
 
+	List<Key> childrenKeys();
+	
 	List<T> children();
 
 	boolean add(T child);

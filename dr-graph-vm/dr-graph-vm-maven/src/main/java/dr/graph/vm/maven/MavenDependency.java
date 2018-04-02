@@ -4,13 +4,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import dr.common.Patchable;
 import dr.common.Resolvable;
 import dr.common.logger.LazyLogger;
 import dr.common.struct.tree.Tree;
 import dr.graph.vm.maven.resolver.MavenArtifactResolver;
 import dr.graph.vm.maven.resolver.MavenDependenciesResolver;
-import dr.graph.vm.parser.GenericParseException;
 import dr.graph.vm.parser.string.SingleMatchParser;
 import dr.graph.vm.parser.util.xml.XmlEntity;
 import dr.graph.vm.parser.util.xml.XmlTag;
@@ -62,6 +60,7 @@ public class MavenDependency extends Tree<MavenDependency> implements Resolvable
 	@Override
 	public MavenDependency parent() {
 		// TODO : make proper Singleton
+		// TODO : to resolve the parent we are resolving all the children ... do we really want this ?
 		if (resolve()) {
 			return parent;
 		}
@@ -70,6 +69,14 @@ public class MavenDependency extends Tree<MavenDependency> implements Resolvable
 
 	public XmlEntity pom() {
 		return pom;
+	}
+	
+	@Override
+	public List<Key> childrenKeys() {
+		if (resolve()) {
+			return children.stream().map(MavenDependency::key).collect(Collectors.toList());
+		}
+		throw new UnresolvedDependencyException();
 	}
 
 	@Override
@@ -110,7 +117,7 @@ public class MavenDependency extends Tree<MavenDependency> implements Resolvable
 					MavenDependency parent = this;
 
 					while (p_key == null) {
-						if (parent.pom == null) {
+						if(parent == null || parent.pom == null) {
 							break;
 						}
 						// with property parsing ...
@@ -167,9 +174,9 @@ public class MavenDependency extends Tree<MavenDependency> implements Resolvable
 				+ " , \n" + "\t pom = " + (pom != null) + " , \n" + "\t parent = " + parent + " \n" + "}";
 	}
 
-	public static MavenDependency create(MavenDependencyKey key) {
-		return new Builder().build(key);
-	}
+//	public static MavenDependency create(MavenDependencyKey key) {
+//		return new Builder().build(key);
+//	}
 
 	public static class Builder {
 
@@ -191,8 +198,7 @@ public class MavenDependency extends Tree<MavenDependency> implements Resolvable
 		}
 
 		public MavenDependency build(MavenDependencyKey key) {
-			return new MavenDependency(key, pomResolver == null ? new MavenArtifactResolver() : pomResolver,
-					dependenciesResolver == null ? new MavenDependenciesResolver() : dependenciesResolver);
+			return new MavenDependency(key, pomResolver,dependenciesResolver);
 		}
 
 	}

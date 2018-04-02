@@ -26,6 +26,11 @@ public class HashMapTree extends Tree<HashMapTree> {
 	public HashMapTree parent() {
 		return parent;
 	}
+	
+	@Override
+	public List<Key> childrenKeys() {
+		return Collections.unmodifiableList(new ArrayList<>(children.keySet()));
+	}
 
 	@Override
 	public List<HashMapTree> children() {

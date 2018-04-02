@@ -12,19 +12,32 @@ import org.slf4j.LoggerFactory;
 import dr.common.file.FileUtils;
 import dr.common.struct.tree.Tree;
 import dr.common.test.AbstractTestWrapper;
+import dr.graph.vm.maven.resolver.MavenArtifactResolver;
+import dr.graph.vm.maven.resolver.MavenDependenciesResolver;
+import dr.graph.vm.source.Resolver;
 
-public class MavenDependencyTreeTest extends AbstractTestWrapper {
+public class MavenDependencyTreeBuilderLogicTest extends MavenDependencyTestBase {
 
-	private final static Logger logger = LoggerFactory.getLogger(MavenDependencyTreeTest.class);
+	private final static Logger logger = LoggerFactory.getLogger(MavenDependencyTreeBuilderLogicTest.class);
 
 	private static final String unresolvedDependencyKey = "com.google.guava:" + "guava";
+	
+	@Override
+	protected Resolver<MavenDependencyKey, String> getPomResolver() {
+		return new MavenArtifactResolver();
+	}
 
+	@Override
+	protected Resolver<String, List<MavenDependencyKey>> getDependenciesResolver() {
+		return new MavenDependenciesResolver();
+	}
+	
 	@Test
 	public void testNoResolve() {
 
 		MavenDependencyKey index = MavenDependencyKey.fromString(unresolvedDependencyKey);
 
-		MavenDependency dependency = MavenDependency.create(index);
+		MavenDependency dependency = createMavenDependency(index);
 
 		Assert.assertFalse(dependency.resolve());
 
@@ -35,7 +48,7 @@ public class MavenDependencyTreeTest extends AbstractTestWrapper {
 
 		MavenDependencyKey index = MavenDependencyKey.fromString(unresolvedDependencyKey);
 
-		MavenDependency dependency = MavenDependency.create(index);
+		MavenDependency dependency = createMavenDependency(index);
 
 		// will throw Exception if it is not resolved ...
 		dependency.children();
@@ -45,7 +58,7 @@ public class MavenDependencyTreeTest extends AbstractTestWrapper {
 	@Test
 	public void testResolvableBehaviorWihtoutParent() {
 
-		MavenDependency mavenDepedency = MavenDependency.create(MavenDependencyKey.fromString(unresolvedDependencyKey));
+		MavenDependency mavenDepedency = createMavenDependency(MavenDependencyKey.fromString(unresolvedDependencyKey));
 
 		Assert.assertFalse(mavenDepedency.resolve());
 
@@ -61,7 +74,7 @@ public class MavenDependencyTreeTest extends AbstractTestWrapper {
 					.fromXml("<dependency>\n" + "    <groupId>com.google.guava</groupId>\n"
 							+ "    <artifactId>guava</artifactId>\n" + "</dependency>");
 
-			MavenDependency dependency = MavenDependency.create(index);
+			MavenDependency dependency = createMavenDependency(index);
 
 			logger.info("dependency = " + dependency);
 
@@ -98,35 +111,35 @@ public class MavenDependencyTreeTest extends AbstractTestWrapper {
 					+ "    <groupId>com.google.guava</groupId>\n" + "    <artifactId>guava</artifactId>\n"
 					+ "    <version>24.0-jre</version>\n" + "</dependency>");
 
-			MavenDependency dependency = MavenDependency.create(index);
+			MavenDependency dependency = createMavenDependency(index);
 
 			// check our pom from artifactory with test file ...
-			Assert.assertEquals(FileUtils.fromClassPathFile("/google-guava-v24.0-jre-pom.xml", this.getClass())
+			Assert.assertEquals(FileUtils.fromClassPathFile("/sample-copy-remote/google-guava-v24.0-jre-pom.xml", this.getClass())
 					.replaceAll("\\s", ""), dependency.pom().getXml().replaceAll("\\s", ""));
 
 			// check out pom with the other FilUtils parser
-			Assert.assertEquals(FileUtils.fromFile("src/test/resources/google-guava-v24.0-jre-pom.xml", this.getClass())
+			Assert.assertEquals(FileUtils.fromFile("src/test/resources/sample-copy-remote/google-guava-v24.0-jre-pom.xml", this.getClass())
 					.replaceAll("\\s", ""), dependency.pom().getXml().replaceAll("\\s", ""));
 
 			// check our parent pom from artifactory with test file ...
-			Assert.assertEquals(FileUtils.fromClassPathFile("/google-guava-parent-v24.0-jre-pom.xml", this.getClass())
+			Assert.assertEquals(FileUtils.fromClassPathFile("/sample-copy-remote/google-guava-parent-v24.0-jre-pom.xml", this.getClass())
 					.replaceAll("\\s", ""), dependency.parent().pom().getXml().replaceAll("\\s", ""));
 
 			// check out parent pom with the other FilUtils parser
 			Assert.assertEquals(
-					FileUtils.fromFile("src/test/resources/google-guava-parent-v24.0-jre-pom.xml", this.getClass())
+					FileUtils.fromFile("src/test/resources/sample-copy-remote/google-guava-parent-v24.0-jre-pom.xml", this.getClass())
 							.replaceAll("\\s", ""),
 					dependency.parent().pom().getXml().replaceAll("\\s", ""));
 
 			// check our parent's parent pom from artifactory with test file ...
 			Assert.assertEquals(
-					FileUtils.fromClassPathFile("/google-guava-parent-parent-v24.0-jre-pom.xml", this.getClass())
+					FileUtils.fromClassPathFile("/sample-copy-remote/google-guava-parent-parent-v24.0-jre-pom.xml", this.getClass())
 							.replaceAll("\\s", ""),
 					dependency.parent().parent().pom().getXml().replaceAll("\\s", ""));
 
 			// check out parent's parent pom with the other FilUtils parser
 			Assert.assertEquals(
-					FileUtils.fromFile("src/test/resources/google-guava-parent-parent-v24.0-jre-pom.xml",
+					FileUtils.fromFile("src/test/resources/sample-copy-remote/google-guava-parent-parent-v24.0-jre-pom.xml",
 							this.getClass()).replaceAll("\\s", ""),
 					dependency.parent().parent().pom().getXml().replaceAll("\\s", ""));
 
@@ -148,7 +161,7 @@ public class MavenDependencyTreeTest extends AbstractTestWrapper {
 					+ "    <groupId>com.google.guava</groupId>\n" + "    <artifactId>guava</artifactId>\n"
 					+ "    <version>24.0-jre</version>\n" + "</dependency>");
 
-			MavenDependency dependency = MavenDependency.create(index);
+			MavenDependency dependency = createMavenDependency(index);
 
 			logger.info("got " + dependency.children().size() + " dependencies for " + dependency.key());
 
@@ -175,7 +188,7 @@ public class MavenDependencyTreeTest extends AbstractTestWrapper {
 					+ "    <groupId>com.google.guava</groupId>\n" + "    <artifactId>guava</artifactId>\n"
 					+ "    <version>24.0-jre</version>\n" + "</dependency>");
 
-			MavenDependency dependency = MavenDependency.create(index);
+			MavenDependency dependency = createMavenDependency(index);
 
 			logger.info("got " + dependency.children().size() + " dependencies for " + dependency.key());
 
@@ -205,7 +218,7 @@ public class MavenDependencyTreeTest extends AbstractTestWrapper {
 					+ "    <groupId>com.google.guava</groupId>\n" + "    <artifactId>guava</artifactId>\n"
 					+ "    <version>24.0-jre</version>\n" + "</dependency>");
 
-			MavenDependency dependency = MavenDependency.create(index);
+			MavenDependency dependency = createMavenDependency(index);
 
 			logger.info("got " + dependency.children().size() + " dependencies for " + dependency.key());
 
@@ -237,5 +250,7 @@ public class MavenDependencyTreeTest extends AbstractTestWrapper {
 		// TODO : ...
 
 	}
+
+	
 
 }
