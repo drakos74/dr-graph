@@ -1,11 +1,13 @@
 package dr.graph.vm.maven;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import dr.common.Resolvable;
 import dr.common.logger.LazyLogger;
+import dr.common.struct.tree.Node;
 import dr.common.struct.tree.Tree;
 import dr.graph.vm.maven.resolver.MavenArtifactResolver;
 import dr.graph.vm.maven.resolver.MavenDependenciesResolver;
@@ -15,7 +17,7 @@ import dr.graph.vm.parser.util.xml.XmlTag;
 import dr.graph.vm.source.GenericResolverException;
 import dr.graph.vm.source.Resolver;
 
-public class MavenDependency extends Tree<MavenDependency> implements Resolvable, LazyLogger {
+public class MavenDependency implements Node.Index, Node<MavenDependency> , Resolvable, LazyLogger {
 
 	// TODO : create resolver chain
 	// TODO : inject those 2 in the generic case of the abstract parent class
@@ -24,7 +26,7 @@ public class MavenDependency extends Tree<MavenDependency> implements Resolvable
 
 	private final MavenDependencyKey key;
 
-	private volatile List<MavenDependency> children = null;
+	private volatile Map<Key,MavenDependency> children = null;
 	private volatile MavenDependency parent = null;
 	private volatile XmlEntity pom = null;
 
@@ -35,12 +37,13 @@ public class MavenDependency extends Tree<MavenDependency> implements Resolvable
 		this.key = key;
 		try {
 			pom = new XmlEntity(pomResolver.resolve(key));
+			log("got pom for "+key+" = \n"+pom.getXml());
 			String parent_tag = pom.getFirst(XmlTag.parent.name());
 			if (parent_tag.isEmpty() == false) {
 				// inherit resolver logic to parent / children
 				parent = new MavenDependency(MavenDependencyKey.fromPlainXml(parent_tag), pomResolver,
 						dependenciesResolver);
-				// BEWARE : this would cause a retrospective parent tree walk .. we dont wat
+				// BEWARE : this would cause a retrospective parent tree walk .. we don't want
 				// that ... We want only to get the parents of parents
 				// parent.resolve();
 			} else {
@@ -70,22 +73,7 @@ public class MavenDependency extends Tree<MavenDependency> implements Resolvable
 	public XmlEntity pom() {
 		return pom;
 	}
-	
-	@Override
-	public List<Key> childrenKeys() {
-		if (resolve()) {
-			return children.stream().map(MavenDependency::key).collect(Collectors.toList());
-		}
-		throw new UnresolvedDependencyException();
-	}
 
-	@Override
-	public List<MavenDependency> children() {
-		if (resolve()) {
-			return children;
-		}
-		throw new UnresolvedDependencyException();
-	}
 
 	@Override
 	public boolean resolve() {
@@ -159,7 +147,7 @@ public class MavenDependency extends Tree<MavenDependency> implements Resolvable
 				return c_key;
 			}).filter(Objects::nonNull).map(k -> {
 				return new MavenDependency(k, this.pomResolver, this.dependenciesResolver);
-			}).collect(Collectors.toList());
+			}).collect(Collectors.toMap(d -> d.key() , d -> d));
 			return true;
 		} catch (GenericResolverException e) {
 			error("Could not resolve " + this, e);
@@ -201,6 +189,100 @@ public class MavenDependency extends Tree<MavenDependency> implements Resolvable
 			return new MavenDependency(key, pomResolver,dependenciesResolver);
 		}
 
+	}
+
+	@Override
+	public Map<Key,MavenDependency> children() {
+		if (resolve()) {
+			return children;
+		}
+		throw new UnresolvedDependencyException();
+	}
+	
+	// generic overrides ... 
+	@Override
+	public int hashCode() {
+		// TODO : fix this method
+		return 0;
+//		final int prime = 31;
+//		int result = 1;
+//		result = prime * result + ((children == null) ? 0 : children.hashCode());
+//		result = prime * result + ((key == null) ? 0 : key.hashCode());
+//		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MavenDependency other = (MavenDependency) obj;
+		// TODO : fix this method ... 
+		return other.toString().equals(this.toString());
+//		if (children == null) {
+//			if (other.children != null)
+//				return false;
+//		} else if (!children.equals(other.children))
+//			return false;
+//		if (key == null) {
+//			if (other.key != null)
+//				return false;
+//		} else if (!key.equals(other.key))
+//			return false;
+//		return true;
+	}
+
+	// TODO : design this path ... 
+	
+	@Override
+	public boolean add(MavenDependency child) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public MavenDependency get(Key key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public MavenDependency get(Key[] address, Key key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean remove(Key key) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Key[] address() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int depth() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int index() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int granularity() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

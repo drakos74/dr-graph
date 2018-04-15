@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -21,13 +22,13 @@ public class FileUtils {
 		return (clazz != null ? clazz : FileUtils.class);
 	}
 
-	public static String fromClassPathFile(String file, Class clazz) throws IOException {
+	public static Optional<String> fromClassPath(String file, Class clazz) throws IOException {
 		InputStream inputStream = getClass(clazz).getResourceAsStream(file);
-		return inputStream == null ? null : fromStream(inputStream);
+		return inputStream == null ? Optional.empty() : fromStream(inputStream);
 	}
 
 	// java 7
-	public static String fromStream(InputStream inputStream) throws IOException {
+	public static Optional<String> fromStream(InputStream inputStream) throws IOException {
 		StringBuilder resultStringBuilder = new StringBuilder();
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
 			String line;
@@ -35,11 +36,11 @@ public class FileUtils {
 				resultStringBuilder.append(line).append("\n");
 			}
 		}
-		return resultStringBuilder.toString();
+		return Optional.of(resultStringBuilder.toString());
 	}
 
 	// java 8
-	public static String fromFile(String file, Class clazz) throws IOException, URISyntaxException {
+	public static Optional<String> fromFile(String file, Class clazz) throws IOException, URISyntaxException {
 		
 		logger.info("path ... "+Paths.get(file).toAbsolutePath());
 		
@@ -49,7 +50,7 @@ public class FileUtils {
 		Stream<String> lines = Files.lines(path);
 		lines.forEach(line -> data.append(line).append("\n"));
 		lines.close();
-		return data.toString();
+		return Optional.of(data.toString());
 
 	}
 

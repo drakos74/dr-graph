@@ -1,14 +1,13 @@
 package dr.common.struct.tree;
 
 import java.util.List;
+import java.util.Map;
 
 public interface Node<T> {
 
 	T parent();
-
-	List<Key> childrenKeys();
 	
-	List<T> children();
+	Map<Key,T> children();
 
 	boolean add(T child);
 

@@ -1,9 +1,7 @@
 package dr.common.struct.tree;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -17,7 +15,7 @@ public class HashMapTree extends Tree<HashMapTree> {
 	private final Map<Node.Key, HashMapTree> children = new ConcurrentHashMap<>();
 
 	public HashMapTree(HashMapTree parent, Node.Index index) {
-		super();
+		super(parent);
 		this.parent = parent;
 		this.index = index;
 	}
@@ -26,15 +24,10 @@ public class HashMapTree extends Tree<HashMapTree> {
 	public HashMapTree parent() {
 		return parent;
 	}
-	
-	@Override
-	public List<Key> childrenKeys() {
-		return Collections.unmodifiableList(new ArrayList<>(children.keySet()));
-	}
 
 	@Override
-	public List<HashMapTree> children() {
-		return Collections.unmodifiableList(new ArrayList<>(children.values()));
+	public Map<Node.Key,HashMapTree> children() {
+		return Collections.unmodifiableMap(children);
 	}
 
 	@Override

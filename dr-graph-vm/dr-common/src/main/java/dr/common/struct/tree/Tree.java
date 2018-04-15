@@ -5,6 +5,20 @@ package dr.common.struct.tree;
  * */
 public abstract class Tree<T> implements Node<T> , Node.Index{
 
+	private final Node<T> head;
+	
+	protected Tree(Node<T> head){
+		this.head = head;
+	}
+	
+	public Node<T> head(){
+		return head;
+	}
+	
+	/*
+	 * Head related methods ... 
+	 * */
+	
 	@Override
 	public Key[] address() {
 		// TODO Auto-generated method stub

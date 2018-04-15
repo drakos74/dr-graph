@@ -2,6 +2,7 @@ package dr.graph.vm.maven.mock;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,30 @@ public abstract class FileSystemResolverBaseTest extends MavenDependencyTestBase
 
 	protected abstract String getPath();
 	
+	@Override
+	protected Resolver<MavenDependencyKey, String> getPomResolver() {
+		return (k) -> {
+			try {
+				String pom = FileUtils.fromFile("src/test/resources/" + getPath() + "/" + k.getArtifactId() + ".xml",
+						this.getClass()).get();
+				return pom;
+			} catch (IOException | URISyntaxException e) {
+				// Assert.fail("Could not resolve ... "+k);
+			}
+			return null;
+		};
+	}
+
+	@Override
+	protected Resolver<String, List<MavenDependencyKey>> getDependenciesResolver() {
+		return new MavenDependenciesResolver();
+	}
+	
+	/**
+	 * NOTE : Every test starts with the base pom : base-pom.xml
+	 * and needs to resolve the basic artifacts as shown below ...
+	 * what is supposed to change amongst tests, is the way versions are resolved for the poms ... 
+	 * */
 	@Test
 	public void testSimpleResolve() {
 
@@ -29,7 +54,7 @@ public abstract class FileSystemResolverBaseTest extends MavenDependencyTestBase
 
 		logger.info("parent=" + dependency.parent().pom().getXml());
 
-		List<MavenDependency> children = dependency.children();
+		List<MavenDependency> children = dependency.children().values().stream().collect(Collectors.toList());
 
 		children.stream().map(c -> "child=" + c).forEach(logger::info);
 		
@@ -51,25 +76,6 @@ public abstract class FileSystemResolverBaseTest extends MavenDependencyTestBase
 
 		Assert.assertTrue(validChildren.stream().map( MavenDependency::key ).anyMatch( c -> c.equals(MavenDependencyKey.fromString("sample.pom.group.id:child-pom-as-dependency::child-dependency-version:")) ));
 
-	}
-
-	@Override
-	protected Resolver<MavenDependencyKey, String> getPomResolver() {
-		return (k) -> {
-			try {
-				String pom = FileUtils.fromFile("src/test/resources/" + getPath() + "/" + k.getArtifactId() + ".xml",
-						this.getClass());
-				return pom;
-			} catch (IOException | URISyntaxException e) {
-				// Assert.fail("Could not resolve ... "+k);
-			}
-			return null;
-		};
-	}
-
-	@Override
-	protected Resolver<String, List<MavenDependencyKey>> getDependenciesResolver() {
-		return new MavenDependenciesResolver();
 	}
 	
 }

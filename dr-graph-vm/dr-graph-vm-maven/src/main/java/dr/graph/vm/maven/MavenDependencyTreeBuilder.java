@@ -8,8 +8,8 @@ import dr.common.struct.tree.TreeBuilder;
 //TODO : develop this class ... 
 public class MavenDependencyTreeBuilder extends TreeBuilder<MavenDependency> implements LazyLogger{
 
-	public MavenDependencyTreeBuilder(Node<MavenDependency> head) {
-		super(head);
+	public MavenDependencyTreeBuilder(Node<MavenDependency> node , int lookUp , int lookDown) {
+		super(node,lookUp,lookDown);
 	}
 	
 	private MavenDependency getHead() {
@@ -27,7 +27,7 @@ public class MavenDependencyTreeBuilder extends TreeBuilder<MavenDependency> imp
 //			}
 //			return null;
 //		}).forEach( dependency -> log("dependency="+dependency) );
-		return null;
+		return new MavenDependencyTree(head);
 	}
 
 }

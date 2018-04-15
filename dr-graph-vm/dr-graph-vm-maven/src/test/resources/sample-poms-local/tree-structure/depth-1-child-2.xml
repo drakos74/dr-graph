@@ -2,27 +2,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<groupId>sample.pom.group.id</groupId>
-	<artifactId>tree-head</artifactId>
+	<artifactId>depth-1-child-2</artifactId>
 	<version>0.0.0</version>
-
-	<properties>
-		<base.version>0.0.0</base.version>
-	</properties>
-
+	
+	<parent>
+		<groupId>sample.pom.group.id</groupId>
+		<artifactId>tree-head</artifactId>
+		<version>0.0.0</version>
+	</parent>
+	
 	<dependencies>
 		<dependency>
 			<groupId>sample.pom.group.id</groupId>
-			<artifactId>depth-1-child-1</artifactId>
+			<artifactId>depth-2-child-2-child-1</artifactId>
 			<version>${base.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>sample.pom.group.id</groupId>
-			<artifactId>depth-1-child-2</artifactId>
+			<artifactId>depth-2-child-2-child-1</artifactId>
 			<version>${base.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>sample.pom.group.id</groupId>
-			<artifactId>depth-1-child-3</artifactId>
+			<artifactId>depth-2-child-2-child-1</artifactId>
 			<version>${base.version}</version>
 		</dependency>
 	</dependencies>
