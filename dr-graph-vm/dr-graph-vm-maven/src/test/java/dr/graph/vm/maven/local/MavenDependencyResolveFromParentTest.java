@@ -1,4 +1,4 @@
-package dr.graph.vm.maven.mock;
+package dr.graph.vm.maven.local;
 
 public class MavenDependencyResolveFromParentTest extends FileSystemResolverBaseTest {
 

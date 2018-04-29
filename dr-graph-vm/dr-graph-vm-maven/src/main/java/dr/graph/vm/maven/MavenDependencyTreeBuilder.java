@@ -15,18 +15,9 @@ public class MavenDependencyTreeBuilder extends TreeBuilder<MavenDependency> imp
 	private MavenDependency getHead() {
 		return (MavenDependency) head;
 	}
-
+	
 	@Override
-	public Tree<MavenDependency> build() {
-//		List<MavenDependency> children = head.children();
-//		children.stream().map(dependency -> {
-//			log("address="+dependency.key());
-//			if(!dependency.resolve()) {
-//				dependency.patch(getHead()).children();
-//				return dependency;
-//			}
-//			return null;
-//		}).forEach( dependency -> log("dependency="+dependency) );
+	protected Tree<MavenDependency> constructTree(){
 		return new MavenDependencyTree(head);
 	}
 

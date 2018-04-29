@@ -1,4 +1,4 @@
-package dr.graph.vm.maven.mock;
+package dr.graph.vm.maven.local;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,7 +9,6 @@ import org.junit.Test;
 import dr.common.struct.tree.Tree;
 import dr.graph.vm.maven.MavenDependency;
 import dr.graph.vm.maven.MavenDependencyKey;
-import dr.graph.vm.maven.MavenDependencyTree;
 import dr.graph.vm.maven.MavenDependencyTreeBuilder;
 
 public class MavenDependencyTreeResolverTest extends FileSystemResolverBaseTest {
@@ -68,7 +67,7 @@ public class MavenDependencyTreeResolverTest extends FileSystemResolverBaseTest 
 		MavenDependency dependency = createMavenDependency(
 				MavenDependencyKey.fromString("sample.pom.group.id:tree-head::base-1:"));
 		
-		MavenDependencyTreeBuilder treeBuilder = new MavenDependencyTreeBuilder(dependency , 0 , 0);
+		MavenDependencyTreeBuilder treeBuilder = new MavenDependencyTreeBuilder(dependency , Integer.MAX_VALUE, 0);
 		
 		Tree tree = treeBuilder.build();
 		
@@ -91,9 +90,26 @@ public class MavenDependencyTreeResolverTest extends FileSystemResolverBaseTest 
 		
 		Tree tree = treeBuilder.build();
 		
-		
-		
 		Assert.assertEquals(head, tree.head());
+		
+	}
+	
+	@Test
+	public void testTreeNoParent() {
+		
+		MavenDependency head = createMavenDependency(
+				MavenDependencyKey.fromString("sample.pom.group.id:tree-head::0.0.0:"));
+		
+		MavenDependency dependency = createMavenDependency(
+				MavenDependencyKey.fromString("sample.pom.group.id:depth-1-child-3::0.0.0:"));
+		
+		MavenDependencyTreeBuilder treeBuilder = new MavenDependencyTreeBuilder(dependency , 0 , 0);
+		
+		Tree tree = treeBuilder.build();
+		
+		Assert.assertEquals(dependency, tree.head());
+		
+		Assert.assertTrue(tree.head() == dependency);
 		
 	}
 

@@ -1,4 +1,4 @@
-package dr.graph.vm.maven.mock;
+package dr.graph.vm.maven.local;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
